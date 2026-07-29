@@ -1,4 +1,4 @@
-name: Weekly Music Copilot
+name: Weekly Spotify Releases
 
 on:
   schedule:
