@@ -2,13 +2,15 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 
+SCOPE = "user-follow-read playlist-read-private playlist-modify-private"
 
 load_dotenv()
 
+
 sp = spotipy.Spotify(
     auth_manager=SpotifyOAuth(
-        scope="user-follow-read playlist-modify-private",
-        cache_path=".spotify_cache"
+        scope=SCOPE,
+        cache_path="data/spotify_cache.json"
     )
 )
 
