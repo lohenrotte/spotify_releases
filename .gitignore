@@ -2,5 +2,4 @@
 __pycache__/
 .env
 .DS_Store
-.spotify_cache
-data/*
+data/spotify_cache.json

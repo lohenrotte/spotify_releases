@@ -7,7 +7,6 @@ CACHE_PATH = Path("data/user_cache.json")
 def load_cache():
     if not CACHE_PATH.exists():
         return {
-            "user_id": "",
             "playlist_id": "",
         }
 

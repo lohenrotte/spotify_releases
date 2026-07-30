@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import json
 from cache import save_cache
 
 
@@ -56,13 +57,13 @@ def add_new_tracks_to_playlist(sp, playlist_id, track_uris):
     while True:
         results = sp.playlist_items(
             playlist_id,
-            fields="items(track(uri)),next",
+            fields="items(item.uri), next",
             limit=100,
             offset=offset,
         )
 
         for item in results["items"]:
-            track = item.get("track")
+            track = item.get("item")
             if track and track.get("uri"):
                 existing_uris.add(track["uri"])
 
@@ -70,10 +71,6 @@ def add_new_tracks_to_playlist(sp, playlist_id, track_uris):
             break
 
         offset += 100
-
-    print(track_uris)
-
-    print(existing_uris)
 
     # Keep only tracks not already present
     new_track_uris = [

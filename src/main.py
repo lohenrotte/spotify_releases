@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from cache import load_cache
-from utils import get_artist_releases, get_or_create_playlist, get_release_tracks
+from utils import get_artist_releases, get_or_create_playlist, get_release_tracks, add_new_tracks_to_playlist
 from spotify_client import get_spotify_client
 
 
@@ -14,12 +14,12 @@ playlist_name = "new releases"
 playlist = get_or_create_playlist(sp, cache, playlist_name)
 
 # Get followed artists 
-artists = sp.current_user_followed_artists(limit=10)["artists"]["items"]
+artists = sp.current_user_followed_artists(limit=100)["artists"]["items"]
 
 # Get new tracks from followed artists in the last 7 days
 tracks = []
-for artist in artists:
-    print(f"Artist: {artist['name']}")
+for i, artist in enumerate(artists):
+    print(f"Artist {i + 1}: {artist['name']}")
     for release in get_artist_releases(sp, artist["id"], days=7):
         print(f"Release: {release['name']}")
         release["artist_name"] = artist["name"]
@@ -38,4 +38,4 @@ for track in tracks:
 
 # Populate the playlist with new tracks
 if track_uris:
-    sp.playlist_add_items(playlist["id"], track_uris)
+    add_new_tracks_to_playlist(sp, playlist["id"], track_uris)
