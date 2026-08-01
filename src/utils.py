@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-import json
-from cache import save_cache
+import os
 
 
 def get_followed_artists(sp) -> list:
@@ -56,24 +55,10 @@ def get_unique_track_uris(tracks):
             uris.append(tid)
     return uris
 
-def get_or_create_playlist(sp, cache, name):
+def add_new_tracks_to_playlist(sp, track_uris):
 
-    # Already cached
-    if cache.get("playlist_id"):
-        return sp.playlist(cache["playlist_id"])
-
-    playlist = sp.current_user_playlist_create(
-        name=name,
-        public=False,
-        description="",
-    )
-
-    cache["playlist_id"] = playlist["id"]
-    save_cache(cache)
-
-    return playlist
-
-def add_new_tracks_to_playlist(sp, playlist_id, track_uris):
+    # Get playlist ID 
+    playlist_id = os.getenv("PLAYLIST_ID")
     
     # Get existing track URIs
     existing_uris = set()
