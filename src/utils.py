@@ -3,6 +3,21 @@ import json
 from cache import save_cache
 
 
+def get_followed_artists(sp) -> list:
+
+    after = None
+    followed_artists = []
+    while True:
+        results = sp.current_user_followed_artists(limit=50, after=after)
+
+        for artist in results["artists"]["items"]:
+            followed_artists.append((artist["id"], artist["name"]))
+
+        after = results["artists"]["cursors"]["after"]
+        if not after:
+            break
+    return followed_artists
+
 def get_release_tracks(sp, album_id):
     tracks = sp.album_tracks(album_id)
     return tracks["items"]
@@ -30,6 +45,16 @@ def get_artist_releases(sp, artist_id, days=7):
         if (date := parse_release_date(release["release_date"]))
         and date >= cutoff
     ]
+
+def get_unique_track_uris(tracks):
+    seen = set()
+    uris = []
+    for track in tracks:
+        tid = track["uri"]
+        if tid not in seen:
+            seen.add(tid)
+            uris.append(tid)
+    return uris
 
 def get_or_create_playlist(sp, cache, name):
 

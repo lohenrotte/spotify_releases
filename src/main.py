@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from cache import load_cache
-from utils import get_artist_releases, get_or_create_playlist, get_release_tracks, add_new_tracks_to_playlist
+from utils import * 
 from spotify_client import get_spotify_client
 
 
@@ -13,28 +13,22 @@ cache = load_cache()
 playlist_name = "new releases"
 playlist = get_or_create_playlist(sp, cache, playlist_name)
 
-# Get followed artists 
-artists = sp.current_user_followed_artists(limit=50)["artists"]["items"]
+# Get all followed artists (up to 50 at a time)
+artists = get_followed_artists(sp)
 
 # Get new tracks from followed artists in the last 7 days
 tracks = []
 for i, artist in enumerate(artists):
-    print(f"Artist {i + 1}: {artist['name']}")
-    for release in get_artist_releases(sp, artist["id"], days=7):
+    print(f"Artist {i + 1}: {artist[1]}")
+    for release in get_artist_releases(sp, artist[0], days=7):
         print(f"Release: {release['name']}")
-        release["artist_name"] = artist["name"]
         for track in get_release_tracks(sp, release["id"]):
             print(f"Track: {track['name']}")
             tracks.append(track)
 
+
 # Get unique track URIs to avoid duplicates
-seen = set()
-track_uris = []
-for track in tracks:
-    tid = track["uri"]
-    if tid not in seen:
-        seen.add(tid)
-        track_uris.append(tid)
+track_uris = get_unique_track_uris(tracks)
 
 # Populate the playlist with new tracks
 if track_uris:
