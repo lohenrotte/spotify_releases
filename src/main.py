@@ -14,7 +14,7 @@ playlist_name = "new releases"
 playlist = get_or_create_playlist(sp, cache, playlist_name)
 
 # Get followed artists 
-artists = sp.current_user_followed_artists(limit=100)["artists"]["items"]
+artists = sp.current_user_followed_artists(limit=50)["artists"]["items"]
 
 # Get new tracks from followed artists in the last 7 days
 tracks = []
